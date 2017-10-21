@@ -1,0 +1,23 @@
+2017-09-14
+Made sure that PaintLayer works.
+Placed PaintLayer in TestingCanvas.
+TODO: continue creating a painting app, should be able to draw on the layer
+
+Now I have the ability to create a model using my Layer class.
+I need to create a Drawing class that takes the current active layer
+and draws on it.
+
+TODO: fix the mouse controller, the paint layer method should be somewhere
+good, but I don't know where. Also I am confused as to what
+objects some of the functions should have access too and how to
+give it to them.
+
+2017-09-22
+DONE: Added the paintLayer method to the View class. Now I need too develop the
+Drawing class and drawline method.
+
+2017-09-26
+
+Problems: very slow execution.
+
+2017-10-18
