@@ -3,7 +3,6 @@ class DrawingMethods {
   }
 
   static drawPoint(color, layer, x, y) {
-    // console.log(layer);
     layer.getPixelAt(x, y).setColor(color);
   }
 
@@ -16,7 +15,6 @@ class DrawingMethods {
 
    while(true){
      DrawingMethods.drawPoint(color, layer, x0, y0);  // Do what you need to for this
-
      if ((x0==x1) && (y0==y1)) break;
      var e2 = 2*err;
      if (e2 >-dy){ err -= dy; x0  += sx; }
