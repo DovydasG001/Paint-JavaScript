@@ -4,10 +4,10 @@ function draw() {
   if (canvas.getContext) {
     var context = canvas.getContext('2d');
 
-    var newLayer = new Layer(800, 600);
-    var mouseController = new MouseController(canvas, newLayer);
+    var newLayer = new Layer(100, 100);
     var view = new View("255, 255, 255, 255");
-    View.paintLayer(context, newLayer);
+    var mouseController = new MouseController(canvas, newLayer, view);
+    View.paintLayer(context, newLayer, view.pixelSize);
 
     console.log("So far so good");
 
@@ -19,6 +19,7 @@ function draw() {
 class View {
   constructor(color) {
     this.brushColor = color;
+    this.pixelSize = 20;
     this.setFormValues();
   }
 
@@ -26,21 +27,33 @@ class View {
     document.getElementById("brushColor").value = this.brushColor;
   }
 
-  static paintLayer(context, layer) {
+  static paintLayer(context, layer, pixelSize) {
+    var windowRow = 0;
+    var windowColumn = 0;
     for (var row = 0; row < layer.getHeight(); row++) {
       for (var column = 0; column < layer.getWidth(); column++) {
         context.fillStyle  = layer.getPixelAt(column, row).getColorString();
-        context.fillRect(column, row, 1, 1);
+        context.fillRect(windowRow, windowColumn, pixelSize, pixelSize);
+        windowColumn += pixelSize;
       }
+      windowColumn = 0;
+      windowRow += pixelSize;
     }
   }
 
-  static refresh(context, layer, bounds) {
-    for (var row = bounds.y0; row < bounds.y1; row++) {
-      for (var column = bounds.x0; column < bounds.x1; column++) {
+  static refresh(context, layer, bounds, pixelSize) {
+    var windowRow = Math.max(bounds.y0, 0)*pixelSize;
+    var windowColumn = Math.max(bounds.x0, 0)*pixelSize;
+    for (var row = Math.max(bounds.y0, 0); row < bounds.y1; row++) {
+      for (var column = Math.max(bounds.x0, 0); column < bounds.x1; column++) {
+        console.log("column: " + column + ", row: " + row);
         context.fillStyle  = layer.getPixelAt(column, row).getColorString();
-        context.fillRect(column, row, 1, 1);
+        context.fillRect(windowColumn, windowRow, pixelSize, pixelSize);
+        console.log("windowColumn: " + windowColumn + ", windowRow: " + windowRow);
+        windowColumn += pixelSize;
       }
+      windowColumn = Math.max(bounds.x0, 0)*pixelSize;
+      windowRow += pixelSize;
     }
   }
 
