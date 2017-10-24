@@ -3,9 +3,10 @@
 // drawing tool
 
 class MouseController {
-  constructor(canvas, layer) {
+  constructor(canvas, layer, view) {
     this.canvas = canvas;
     this.layer = layer;
+    this.view = view;
     this.mousePosition = {x: 0, y: 0};
     this.activateMouseListeners();
     this.mouseDown = false;
@@ -50,7 +51,19 @@ class MouseController {
 
   moudeDownEvent(event){
     this.mousePosition.x = event.pageX - this.canvas.offsetLeft;
+    console.log("ori_mouse.x: " + this.mousePosition.x);
+    if (this.mousePosition.x != 0) {
+      this.mousePosition.x--;
+    }
+    this.mousePosition.x = parseInt(this.mousePosition.x/this.view.pixelSize);
+    console.log("mod_mouse.x: " + this.mousePosition.x);
     this.mousePosition.y = event.pageY - this.canvas.offsetTop;
+    console.log("ori_mouse.y: " + this.mousePosition.y);
+    if (this.mousePosition.y != 0) {
+      this.mousePosition.y--;
+    }
+    this.mousePosition.y = parseInt(this.mousePosition.y/this.view.pixelSize);
+    console.log("mod_mouse.y: " + this.mousePosition.y);
     DrawingMethods.drawPoint(
       DrawingMethods.colorStringToObj(
         document.getElementById('brushColor').value
@@ -63,8 +76,9 @@ class MouseController {
       this.layer,
       View.findBounds(
         {x: this.mousePosition.x, y: this.mousePosition.y},
-        {x: this.mousePosition.x, y: this.mousePosition.y})
-      );
+        {x: this.mousePosition.x, y: this.mousePosition.y}
+      ),
+      this.view.pixelSize);
   }
 
   mouseMoveEvent(event){
