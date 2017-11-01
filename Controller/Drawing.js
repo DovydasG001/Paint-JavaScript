@@ -14,7 +14,7 @@ class DrawingMethods {
    var err = dx-dy;
 
    while(true){
-     DrawingMethods.drawPoint(color, layer, x0, y0);  // Do what you need to for this
+     DrawingMethods.drawPoint(color, layer, x0, y0);
      if ((x0==x1) && (y0==y1)) break;
      var e2 = 2*err;
      if (e2 >-dy){ err -= dy; x0  += sx; }
