@@ -29,7 +29,7 @@ class ToolController {
   static BucketTool(eventType, mousePosition, object) {
     if (eventType == 'leftbuttondown') {
       ToolController.paintWholeLayer(
-        "#" + object.view.brushColor,
+        "#" + document.getElementById("brushColor").value,
         object.layer
       );
       object.view.refresh(
@@ -49,7 +49,7 @@ class ToolController {
     if (eventType == 'leftbuttondown') {
       // Calls appropriate drawing method
       ToolController.drawPoint(
-        "#" + object.view.brushColor,
+        "#" + document.getElementById("brushColor").value,
         object.layer,
         mousePosition.x,
         mousePosition.y
@@ -66,7 +66,7 @@ class ToolController {
       );
     } else if (eventType == 'mousemove') {
       ToolController.drawLine(
-        "#" + object.view.brushColor,
+        "#" + document.getElementById("brushColor").value,
         object.layer,
         mousePosition.xLast,
         mousePosition.yLast,
