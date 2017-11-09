@@ -3,9 +3,10 @@
 // drawing tool
 
 class MouseController {
-  constructor(canvas, layer, view) {
+  constructor(toolController, canvas, view) {
+    this.toolController = toolController;
     this.canvas = canvas;
-    this.layer = layer;
+    //this.layer = layer; // the mouse controller should not take layer
     this.view = view;
     this.mousePosition = {x: 0, y: 0};
     this.activateMouseListeners();
@@ -16,22 +17,23 @@ class MouseController {
 
   activateMouseListeners() {
     // initialize current object into new variable to give methods outside this function access to the current objects variables
-    var currentObject = this;
-    // adding a key listener
+    // CHECKING to see if current object is necessary with the arrow function notation
+
+    // Mouse listeners for drawing
     document.addEventListener(
       'keydown',
-      function(event) {
-        if (event.key == "Shift") {currentObject.shiftDown = true;}
+      (event) => {
+        if (event.key == "Shift") {this.shiftDown = true;}
       }
     );
     document.addEventListener(
       'keyup',
-      function(event) {
-        if (event.key == "Shift") {currentObject.shiftDown = false;}
+      (event) => {
+        if (event.key == "Shift") {this.shiftDown = false;}
       }
     );
 
-    // higlights the current pixelSize
+    // Higlights the current pixelSize
     canvas.addEventListener(
       'mouseover',
       function(event) {
@@ -40,12 +42,12 @@ class MouseController {
 
     canvas.addEventListener(
       'mousedown',
-      function(event) {
-        currentObject.mouseDown = true;
-        if (currentObject.shiftDown) {
-          currentObject.mouseMoveEvent(event);
+      (event) => {
+        this.mouseDown = true;
+        if (this.shiftDown) {
+          this.mouseMoveEvent(event);
         } else {
-          currentObject.moudeDownEvent(event);
+          this.mouseDownEvent(event);
         }
       },
       false
@@ -53,75 +55,72 @@ class MouseController {
 
     canvas.addEventListener(
       'mousemove',
-      function(event) {
-        if (currentObject.mouseDown) {currentObject.mouseMoveEvent(event);}
+      (event) => {
+        if (this.mouseDown) {this.mouseMoveEvent(event);}
       },
       false
     );
 
     canvas.addEventListener(
       'mouseup',
-      function(event) {
-        currentObject.mouseDown = false;
+      (event) => {
+        this.mouseDown = false;
+      },
+      false
+    );
+
+    // Mouse listeners for input buttons
+    let brushColorButton = document.getElementById("brush-color-button");
+    brushColorButton.addEventListener(
+      'mousedown',
+      () => {
+        this.view.brushColor = document.getElementById("brushColor").value;
+      }
+    );
+
+    // Mouse listeners for tool selection
+    let pencilIcon = document.getElementById("pencil-icon");
+    pencilIcon.addEventListener(
+      'click',
+      () => {
+        this.toolController.setCurrentTool("pencil-tool");
+      },
+      false
+    );
+    let bucketIcon = document.getElementById("bucket-icon");
+    bucketIcon.addEventListener(
+      'click',
+      () => {
+        this.toolController.setCurrentTool("bucket-tool");
       },
       false
     );
   }
 
-  moudeDownEvent(event){
-    this.mousePosition.x = event.pageX - this.canvas.offsetLeft;
-    console.log("ori_mouse.x: " + this.mousePosition.x);
-    if (this.mousePosition.x != 0) {
-      this.mousePosition.x--;
-    }
-    this.mousePosition.x = parseInt(this.mousePosition.x/this.view.pixelSize);
-    console.log("mod_mouse.x: " + this.mousePosition.x);
-    this.mousePosition.y = event.pageY - this.canvas.offsetTop;
-    console.log("ori_mouse.y: " + this.mousePosition.y);
-    if (this.mousePosition.y != 0) {
-      this.mousePosition.y--;
-    }
-    this.mousePosition.y = parseInt(this.mousePosition.y/this.view.pixelSize);
-    console.log("mod_mouse.y: " + this.mousePosition.y);
-    DrawingMethods.drawPoint(
-      DrawingMethods.colorStringToObj(
-        document.getElementById('brushColor').value
-      ),
-      this.layer,
-      this.mousePosition.x,
-      this.mousePosition.y);
-    View.refresh(
-      this.canvas.getContext('2d'),
-      this.layer,
-      View.findBounds(
-        {x: this.mousePosition.x, y: this.mousePosition.y},
-        {x: this.mousePosition.x, y: this.mousePosition.y}
-      ),
-      this.view.pixelSize);
+  mouseDownEvent(event){
+    // Transforms the mouse coordinates according to Page coordinates and View setings
+    [this.mousePosition.x, this.mousePosition.y] = this.transformMouseCoordinates(event);
+    // Calls drawing methods
+    this.toolController.CurrentTool(
+      'leftbuttondown',
+      {x: this.mousePosition.x, y: this.mousePosition.y}
+    );
   }
 
   mouseMoveEvent(event){
-    var lastMousePosition = {
-      x: this.mousePosition.x,
-      y: this.mousePosition.y
-    };
-    this.mousePosition.x = event.pageX - this.canvas.offsetLeft;
-    this.mousePosition.y = event.pageY - this.canvas.offsetTop;
-    DrawingMethods.drawLine(
-      DrawingMethods.colorStringToObj(
-        document.getElementById('brushColor').value
-      ),
-      this.layer,
-      lastMousePosition.x, lastMousePosition.y,
-      this.mousePosition.x, this.mousePosition.y);
-
-    View.refresh(
-      this.canvas.getContext('2d'),
-      this.layer,
-      View.findBounds(
-        {x: lastMousePosition.x, y: lastMousePosition.y},
-        {x: this.mousePosition.x, y: this.mousePosition.y})
-      );
+    // Transforms the mouse coordinates according to Page coordinates and View setings
+    let [xLast, yLast] = [this.mousePosition.x, this.mousePosition.y];
+    let [xNew, yNew] = this.transformMouseCoordinates(event);
+    [this.mousePosition.x, this.mousePosition.y] = [xNew, yNew];
+    this.toolController.CurrentTool(
+      'mousemove',
+      {
+        xLast,
+        yLast,
+        xNew,
+        yNew
+      }
+    );
   }
 
   // sets the layer that the mouse listener reacts to
@@ -129,4 +128,21 @@ class MouseController {
   setCurrentLayer(layer) {
     this.layer = layer;
   }
+
+  transformMouseCoordinates(event) {
+    // Transforms the mouse coordinates from page coordinates into layer coordinates
+    let x = event.pageX - this.canvas.offsetLeft;
+    // Transforms the coordinates according to the size of the pixel in the View
+    if (x != 0) {
+      x--;
+    }
+    x = parseInt(x/this.view.pixelSize);
+    let y = event.pageY - this.canvas.offsetTop;
+    if (y != 0) {
+      y--;
+    }
+    y = parseInt(y/this.view.pixelSize);
+    return [x, y];
+  }
+
 }
