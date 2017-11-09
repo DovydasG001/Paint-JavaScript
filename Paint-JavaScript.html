@@ -5,30 +5,25 @@
     <title>Paint.JavaScript</title>
   </head>
   <body onload="draw();">
-    <canvas id="canvas" width="800" height="600"></canvas>
-    <scirpt src="jscolor-2.0.4/jscolor.js"></script>
+    <div id="canvascontainer" style="float: left; width:800px; height:800px; overflow: scroll;">
+      <canvas id="canvas" width="1600" height="1600"></canvas>
+    </div>
+    <script src="../jscolor-2.0.4/jscolor.js"></script>
     <script src="Model/Pixel.js"></script>
     <script src="Model/Layer.js"></script>
     <script src="Controller/Drawing.js"></script>
     <script src="Controller/MouseController.js"></script>
     <script src="View/View.js"></script>
     <script src="Main.js"></script>
+
+
+    <div class="tool-properties">
+      Brush color:
+      <input id="brushColor" class="jscolor" value="ab2567"/>
+    </div>
+    <div class="tool-selection">
+      <input id="pencil-icon" type="image" src="Images/pencil-icon.png" />
+      <input id="bucket-icon" type="image" src="Images/bucket-icon.png" />
+    </div>
   </body>
-
-  <div class="tool-properties">
-    Brush color:
-    <input id="brushColor" class="jscolor" value="636363"/>
-    <!--<input id="brushColor" name="brushColor" type="text" />-->
-    <input id="brush-color-button" type="button" name="button" value="Set Color"/>
-
-    Repaint layer in new color:
-    <input id="background-color" name="background-color" type="text" />
-    <input type="button" value="Change background color" onclick="View.paintWholeLayer(background-color.value, newLayer)"/>
-  </div class="tool-selection">
-    <input id="pencil-icon" type="image" src="Images/pencil-icon.png" />
-    <input id="bucket-icon" type="image" src="Images/bucket-icon.png" />
-  <div>
-
-  </div>
-
 </html>
