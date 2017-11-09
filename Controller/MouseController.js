@@ -69,15 +69,6 @@ class MouseController {
       false
     );
 
-    // Mouse listeners for input buttons
-    let brushColorButton = document.getElementById("brush-color-button");
-    brushColorButton.addEventListener(
-      'mousedown',
-      () => {
-        this.view.brushColor = document.getElementById("brushColor").value;
-      }
-    );
-
     // Mouse listeners for tool selection
     let pencilIcon = document.getElementById("pencil-icon");
     pencilIcon.addEventListener(
@@ -131,13 +122,14 @@ class MouseController {
 
   transformMouseCoordinates(event) {
     // Transforms the mouse coordinates from page coordinates into layer coordinates
-    let x = event.pageX - this.canvas.offsetLeft;
+    let canvasContainer = document.getElementById("canvascontainer");
+    let x = event.pageX - this.canvas.offsetLeft + canvasContainer.scrollLeft;
     // Transforms the coordinates according to the size of the pixel in the View
     if (x != 0) {
       x--;
     }
     x = parseInt(x/this.view.pixelSize);
-    let y = event.pageY - this.canvas.offsetTop;
+    let y = event.pageY - this.canvas.offsetTop + canvasContainer.scrollTop;
     if (y != 0) {
       y--;
     }
