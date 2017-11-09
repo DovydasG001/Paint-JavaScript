@@ -21,7 +21,6 @@ class Layer {
 
   getHeight(){
     return this.height;
-    //return 1;
   }
 
   // Computed Getters
