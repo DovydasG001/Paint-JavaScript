@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Drawing</title>
+  </head>
+  <body>
+    <div id="new-drawing-attributes">
+      New drawing<br/>
+      Width: <input id="width" type="text" value="800"/>
+      Height: <input id="height" type="text" value="600"/>
+      <input type="button" value="Create" onclick="draw()"/>
+    </div>
+
+    <div id="drawing" style="display: none;">
+      <div id="canvascontainer" style="float: left; overflow: scroll;">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="tool-properties">
+        Brush color:
+        <input id="brushColor" class="jscolor" value="ab2567"/>
+      </div>
+      <div class="tool-selection">
+        <input id="pencil-icon" type="image" src="../Images/pencil-icon.png" />
+        <input id="bucket-icon" type="image" src="../Images/bucket-icon.png" />
+      </div>
+      <p>Layer Menu</p>
+      <div id="layer-menu"></div>
+      <div>
+        <input id="add-layer-button" type="button" value="Add Layer"/>
+      </div>
+    </div>
+
+    <script src="../../jscolor-2.0.4/jscolor.js"></script>
+    <script src="../Model/Pixel.js"></script>
+    <script src="../Model/Layer.js"></script>
+    <script src="../Model/Model.js"></script>
+    <script src="../Controller/ToolController.js"></script>
+    <script src="../Controller/MouseController.js"></script>
+    <script src="../Controller/CanvasController.js"></script>
+    <script src="../Main.js"></script>
+  </body>
+</html>

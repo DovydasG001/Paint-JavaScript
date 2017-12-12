@@ -20,4 +20,59 @@ Drawing class and drawline method.
 
 Problems: very slow execution.
 
-2017-10-18
+2017-10-23
+Changed the view to show different sized pixels, because of that the it is
+not clear which pixel the mouse is on at the time.
+
+The property of pixel size belongs to the view, because the pixel doesn't
+change, the representation of it does.
+
+2017-10-30
+TODO: Highlight the pixel that is being hovered on.
+TODO: Fix drawLine, to be able to draw even when the pixel size different
+
+2017-11-01
+The class that has methods for drawing, needs to be given mouse coordinates
+and it needs to know what to do by itself. It should have a variable for the
+current tool in use.
+
+TODO: Change mouseController to activate a function in the object ToolController
+rather then activating a static method in the class ToolController.
+
+POSSIBLE-ISSUE: What if the zoom was changed between mouse operations?
+
+2017-11-09
+TODO: Integrate jscolor into app. DONE
+PROBLEM: Adding scrolling to the canvas element poses problems, because the mouse
+position is calculated according to the upper left corner and scrolling is
+not taken into account. FIXED: added the scroll offset to the mouse position.
+
+NEXT: Create input to specify the size of the window. Adde zooming and connect
+pixel size with zoom level.
+
+2017-11-11
+PROBLEM: the added margin makes the canvas container slightly too big. Need to find outside
+where does the few extra pixels come from.
+TODO: Set up a way to create a new drawing.  DONE.
+TODO: Layers. Object layerList has all the layers. They are sorted from
+highest priority to lowest. The highest one has all of its pixels set to
+VISIBLE. The lower ones have their pixels set to INVISIBLE if the corresponding
+pixel in the layer above is FILLED and VISIBLE. If there are three layers,
+when drawing on the middle one, the color of the pixel changes accordingly to the
+drawing action, but the pixel does not get REPAINTED if it is INVISIBLE. If a pixel in
+the highest layer gets deleted, the pixels in the layer bellow get changed to VISIBLE.
+If any are EMPTY, then pixels in a even lower layer get changed to VISIBLE and so on, until
+either all the layers have been cycled through or a FILLED pixel gets turned into a VISIBLE one.
+
+2017-11-13
+PROBLEMS: MouseController.addNewLayer does too much.
+DONE: Changed it so that the View and Model be separate and added methods for
+adding extra layers into the Model layer array.
+TODO: Change canvas repainting so that the layer priority is taken into account.
+
+2017-11-19
+TODO: Can figure out how I need to draw layers in an efficient way. If I draw from the bottom up, I
+draw every pixel and it just uses too much resources. If I draw from the top down, I need
+to only draw something from a lower layer if the upper layer has an Empty pixel. This
+is not a fix, because having almost empty layers would mean I would have to constantly
+recheck things.
